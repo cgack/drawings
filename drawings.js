@@ -166,8 +166,8 @@ $(function () {
                     draw = 1;
                     ctx.beginPath();
                     ctx.moveTo(e.targetTouches[0].pageX - left, e.targetTouches[0].pageY - top);
-                    break;targetTouches[0].
-               targetTouches[0]. case Mode.write:
+                    break;
+                case Mode.write:
                     ctx.fillText(prompt('Text to Insert', ''), e.targetTouches[0].pageX - left, e.targetTouches[0].pageY - top);
                     storeHistory();
                     break;
