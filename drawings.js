@@ -165,10 +165,10 @@ $(function () {
                 case Mode.drawing:
                     draw = 1;
                     ctx.beginPath();
-                    ctx.moveTo(e.pageX - left, e.pageY - top);
-                    break;
-                case Mode.write:
-                    ctx.fillText(prompt('Text to Insert', ''), e.pageX - left, e.pageY - top);
+                    ctx.moveTo(e.targetTouches[0].pageX - left, e.targetTouches[0].pageY - top);
+                    break;targetTouches[0].
+               targetTouches[0]. case Mode.write:
+                    ctx.fillText(prompt('Text to Insert', ''), e.targetTouches[0].pageX - left, e.targetTouches[0].pageY - top);
                     storeHistory();
                     break;
             }
@@ -183,7 +183,7 @@ $(function () {
             switch (mode) {
                 case Mode.drawing:
                     draw = 0;
-                    ctx.lineTo(e.pageX-left+1, e.pageY-top+1);
+                    ctx.lineTo(e.targetTouches[0].pageX-left+1, e.targetTouches[0].pageY-top+1);
                     ctx.stroke();
                     ctx.closePath();
                     break;
@@ -201,7 +201,7 @@ $(function () {
         if(draw === 1){
             switch (mode) {
                 case Mode.drawing:
-                    ctx.lineTo(e.pageX-left+1, e.pageY-top+1);
+                    ctx.lineTo(e.targetTouches[0].pageX-left+1, e.targetTouches[0].pageY-top+1);
                     ctx.stroke();
                     break;
                 case Mode.write:
