@@ -155,6 +155,61 @@ $(function () {
         }
     });
 
+    canvas.addEventListener("touchstart", function (e) {
+        if (e.button === 0) {
+            if (blankCanvas) {
+                storeHistory();
+                blankCanvas = false;
+            }
+            switch (mode) {
+                case Mode.drawing:
+                    draw = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(e.pageX - left, e.pageY - top);
+                    break;
+                case Mode.write:
+                    ctx.fillText(prompt('Text to Insert', ''), e.pageX - left, e.pageY - top);
+                    storeHistory();
+                    break;
+            }
+        }
+        else{
+            draw = 0;
+        }
+    });
+
+    canvas.addEventListener("touchend" ,function (e) {
+        if(e.button === 0){
+            switch (mode) {
+                case Mode.drawing:
+                    draw = 0;
+                    ctx.lineTo(e.pageX-left+1, e.pageY-top+1);
+                    ctx.stroke();
+                    ctx.closePath();
+                    break;
+                case Mode.write:
+                    break;
+                }
+            storeHistory();
+        }
+        else {
+            draw = 1;
+        }
+    });
+
+    canvas.addEventListener("touchmove", function (e) {
+        if(draw === 1){
+            switch (mode) {
+                case Mode.drawing:
+                    ctx.lineTo(e.pageX-left+1, e.pageY-top+1);
+                    ctx.stroke();
+                    break;
+                case Mode.write:
+                    break;
+            }
+        }
+    });
+
     $('#clear').click(function (e) {
         initializeCvs(true);
     });
