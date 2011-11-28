@@ -154,7 +154,7 @@ $(function () {
             }
         }
     });
-
+   $(document).ready(function() {
     // create a drawer which tracks touch movements
     var drawer = {
       isDrawing: false,
@@ -194,7 +194,7 @@ $(function () {
     document.body.addEventListener('touchmove',function(event){
       event.preventDefault();
     },false);
-
+});
     $('#clear').click(function (e) {
         initializeCvs(true);
     });
