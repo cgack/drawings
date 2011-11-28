@@ -210,6 +210,10 @@ $(function () {
         }
     });
 
+    document.body.addEventListener('touchmove',function(event){
+      event.preventDefault();
+    },false);
+
     $('#clear').click(function (e) {
         initializeCvs(true);
     });
