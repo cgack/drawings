@@ -159,14 +159,14 @@ $(function () {
     var drawer = {
       isDrawing: false,
       touchstart: function(coors){
-        context.beginPath();
-        context.moveTo(coors.x, coors.y);
+        ctx.beginPath();
+        ctx.moveTo(coors.x, coors.y);
         this.isDrawing = true;
         },
       touchmove: function(coors){
         if (this.isDrawing) {
-        context.lineTo(coors.x, coors.y);
-        context.stroke();
+        ctx.lineTo(coors.x, coors.y);
+        ctx.stroke();
         }
       },
       touchend: function(coors){
