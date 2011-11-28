@@ -155,60 +155,41 @@ $(function () {
         }
     });
 
-    canvas.addEventListener("touchstart", function (e) {
-        if (e.button === 0) {
-            if (blankCanvas) {
-                storeHistory();
-                blankCanvas = false;
-            }
-            switch (mode) {
-                case Mode.drawing:
-                    draw = 1;
-                    ctx.beginPath();
-                    ctx.moveTo(e.targetTouches[0].pageX - left, e.targetTouches[0].pageY - top);
-                    break;
-                case Mode.write:
-                    ctx.fillText(prompt('Text to Insert', ''), e.targetTouches[0].pageX - left, e.targetTouches[0].pageY - top);
-                    storeHistory();
-                    break;
-            }
+    // create a drawer which tracks touch movements
+    var drawer = {
+      isDrawing: false,
+      touchstart: function(coors){
+        context.beginPath();
+        context.moveTo(coors.x, coors.y);
+        this.isDrawing = true;
+        },
+      touchmove: function(coors){
+        if (this.isDrawing) {
+        context.lineTo(coors.x, coors.y);
+        context.stroke();
         }
-        else{
-            draw = 0;
+      },
+      touchend: function(coors){
+        if (this.isDrawing) {
+        this.touchmove(coors);
+        this.isDrawing = false;
         }
-    });
-
-    canvas.addEventListener("touchend" ,function (e) {
-        if(e.button === 0){
-            switch (mode) {
-                case Mode.drawing:
-                    draw = 0;
-                    ctx.lineTo(e.targetTouches[0].pageX-left+1, e.targetTouches[0].pageY-top+1);
-                    ctx.stroke();
-                    ctx.closePath();
-                    break;
-                case Mode.write:
-                    break;
-                }
-            storeHistory();
-        }
-        else {
-            draw = 1;
-        }
-    });
-
-    canvas.addEventListener("touchmove", function (e) {
-        if(draw === 1){
-            switch (mode) {
-                case Mode.drawing:
-                    ctx.lineTo(e.targetTouches[0].pageX-left+1, e.targetTouches[0].pageY-top+1);
-                    ctx.stroke();
-                    break;
-                case Mode.write:
-                    break;
-            }
-        }
-    });
+      }
+    };
+    // create a function to pass touch events and coordinates to drawer
+    function draw(event){
+      // get the touch coordinates
+      var coors = {
+        x: event.targetTouches[0].pageX,
+        y: event.targetTouches[0].pageY
+      };
+      // pass the coordinates to the appropriate handler
+      drawer[event.type](coors);
+    }
+    // attach the touchstart, touchmove, touchend event listeners.
+    canvas.addEventListener('touchstart',draw, false);
+    canvas.addEventListener('touchmove',draw, false);
+    canvas.addEventListener('touchend',draw, false); 
 
     document.body.addEventListener('touchmove',function(event){
       event.preventDefault();
