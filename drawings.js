@@ -1,41 +1,4 @@
-/* ***** BEGIN LICENSE BLOCK *****
- Version: MPL 1.1/GPL 2.0/LGPL 2.1
- 
- The contents of this file are subject to the Mozilla Public License Version 
- 1.1 (the "License"); you may not use this file except in compliance with 
- the License. You may obtain a copy of the License at 
- http://www.mozilla.org/MPL/
- 
- Software distributed under the License is distributed on an "AS IS" basis,
- WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
- for the specific language governing rights and limitations under the
- License.
- 
- The Original Code is drawings.
- 
- The Initial Developer of the Original Code is
- cgack.
- Portions created by the Initial Developer are Copyright (C) 2011
- the Initial Developer. All Rights Reserved.
- 
- Contributor(s):
- Cory Gack
-
- Alternatively, the contents of this file may be used under the terms of
- either the GNU General Public License Version 2 or later (the "GPL"), or
- the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
- in which case the provisions of the GPL or the LGPL are applicable instead
- of those above. If you wish to allow use of your version of this file only
- under the terms of either the GPL or the LGPL, and not to allow others to
- use your version of this file under the terms of the MPL, indicate your
- decision by deleting the provisions above and replace them with the notice
- and other provisions required by the GPL or the LGPL. If you do not delete
- the provisions above, a recipient may use your version of this file under
- the terms of any one of the MPL, the GPL or the LGPL.
- 
- ***** END LICENSE BLOCK ***** */
-
-$(function () {  
+(function () {  
 
     var Mode = { drawing: 0, write: 1 };
 
@@ -101,7 +64,7 @@ $(function () {
     var backout = function () {
         window.history.go("-" + histCount); 
     };
-
+/*
     $cvs.mousedown(function (e) {
         if (e.button === 0) {
             if (blankCanvas) {
@@ -154,42 +117,71 @@ $(function () {
             }
         }
     });
+    */
    $(document).ready(function() {
     // create a drawer which tracks touch movements
-    var drawer = {
-      isDrawing: false,
-      touchstart: function(coors){
-        ctx.beginPath();
-        ctx.moveTo(coors.x, coors.y);
-        this.isDrawing = true;
+    var draw = {
+        isDrawing: false,
+        mousedown: function(coordinates) {
+            if (blankCanvas) { storeHistory(); blankCanvas = false; }
+            ctx.beginPath();
+            ctx.moveTo(coordinates.x, coordinates.y);
+            this.isDrawing = true;
         },
-      touchmove: function(coors){
-        if (this.isDrawing) {
-        ctx.lineTo(coors.x, coors.y);
-        ctx.stroke();
+        mousemove: function(coordinates) {
+            if (this.isDrawing) {
+                ctx.lineTo(coordinates.x, coordinates.y);
+                ctx.stroke();
+            }
+        },
+        mouseup: function(coordinates) {
+            this.isDrawing = false;
+            ctx.lineTo(coordinates.x, coordinates.y);
+            ctx.stroke();
+            ctx.closePath();
+            storeHistory();
+        },
+        touchstart: function(coordinates){
+            if (blankCanvas) { storeHistory(); blankCanvas = false; }
+            ctx.beginPath();
+            ctx.moveTo(coordinates.x, coordinates.y);
+            this.isDrawing = true;
+        },
+        touchmove: function(coordinates){
+            if (this.isDrawing) {
+                ctx.lineTo(coordinates.x, coordinates.y);
+                ctx.stroke();
+            }
+        },
+        touchend: function(coordinates){
+            if (this.isDrawing) {
+                this.touchmove(coordinates);
+                this.isDrawing = false;
+                storeHistory();
+            }
         }
-      },
-      touchend: function(coors){
-        if (this.isDrawing) {
-        this.touchmove(coors);
-        this.isDrawing = false;
-        }
-      }
     };
     // create a function to pass touch events and coordinates to drawer
-    function draw(event){
-      // get the touch coordinates
-      var coors = {
-        x: event.targetTouches[0].pageX,
-        y: event.targetTouches[0].pageY
-      };
-      // pass the coordinates to the appropriate handler
-      drawer[event.type](coors);
-    }
-    // attach the touchstart, touchmove, touchend event listeners.
-    canvas.addEventListener('touchstart',draw, false);
-    canvas.addEventListener('touchmove',draw, false);
-    canvas.addEventListener('touchend',draw, false); 
+    function setupDraw(event){
+
+        var coordinates = {};
+        if (event.type.indexOf("touch") != -1 ){
+            coordinates.x = event.targetTouches[0].pageX - left;
+            coordinates.y = event.targetTouches[0].pageY - top;
+        } else {
+            coordinates.x = event.pageX - left;
+            coordinates.y = event.pageY - top;
+        }
+             
+        draw[event.type](coordinates);
+    };
+
+    window.addEventListener("mousedown", setupDraw, false);
+    window.addEventListener("mousemove", setupDraw, false);
+    window.addEventListener("mouseup", setupDraw, false);
+    canvas.addEventListener('touchstart',setupDraw, false);
+    canvas.addEventListener('touchmove',setupDraw, false);
+    canvas.addEventListener('touchend',setupDraw, false); 
 
     document.body.addEventListener('touchmove',function(event){
       event.preventDefault();
@@ -296,4 +288,4 @@ $(function () {
             }
         }
     };
-});
+})();
