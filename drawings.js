@@ -1,4 +1,4 @@
-(function () {  
+$(document).ready(function() {
 
     var Mode = { drawing: 0, write: 1 };
 
@@ -118,7 +118,7 @@
         }
     });
     */
-   $(document).ready(function() {
+   
     // create a drawer which tracks touch movements
     var draw = {
         isDrawing: false,
@@ -186,7 +186,7 @@
     document.body.addEventListener('touchmove',function(event){
       event.preventDefault();
     },false);
-});
+
     $('#clear').click(function (e) {
         initializeCvs(true);
     });
@@ -288,4 +288,4 @@
             }
         }
     };
-})();
+});
