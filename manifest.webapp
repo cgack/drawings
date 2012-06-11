@@ -1,5 +1,6 @@
 {
 	"version" : "0.1",
 	"name" : "Draw!",
-	"description" : "A Simple Drawing App"
+	"description" : "A Simple Drawing App",
+	"launch_path" : "http://cgack.com/drawings/index.html"
 }
